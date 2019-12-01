@@ -1,6 +1,6 @@
 *
-.*
-.*.swp
+.*.lua
+.*.*.swp
 !*.conf
 !*.png
 !*.lua
