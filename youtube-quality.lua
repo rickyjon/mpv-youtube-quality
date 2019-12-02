@@ -120,7 +120,7 @@ function show_menu()
 			if menu_end < num_options and selected >= menu_end then
 				menu_start = menu_start + 1
 				menu_end = menu_end + 1
-			elseif (selected > 1) and selected <= menu_start then
+			elseif selected > 1 and selected <= menu_start then
 				menu_start = menu_start - 1
 				menu_end = menu_end - 1
 			end
@@ -296,9 +296,13 @@ end
 
 -- main
 -- keybind to launch menu
-mp.add_key_binding(opts.toggle_menu_binding, "quality-menu", show_menu)
 mp.register_event('file-loaded', function()
-	download_formats()
+	if string.find(mp.get_property('path'), "http") == nil then
+		mp.remove_key_binding("quality-menu")
+	else
+		mp.add_key_binding(opts.toggle_menu_binding, "quality-menu", show_menu)
+		download_formats()
+	end
 	--mp.observe_property("path", "string", download_formats())
-	end);
+end);
 
