@@ -76,7 +76,7 @@ function show_menu()
     msg.verbose("current ytdl-format: "..current_ytdl_format)
     local num_options = 0
     local options = {}
-	local menu_items = 5
+	local menu_items = opts.menu_items
 	local menu_start = selected
 	local menu_end = menu_items
 
