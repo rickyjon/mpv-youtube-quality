@@ -43,6 +43,7 @@ local opts = {
 
     --other
     menu_timeout = 10,
+	menu_items = 5,
 
     --use youtube-dl to fetch a list of available formats (overrides quality_strings)
     fetch_formats = true,
@@ -75,6 +76,9 @@ function show_menu()
     msg.verbose("current ytdl-format: "..current_ytdl_format)
     local num_options = 0
     local options = {}
+	local menu_items = 5
+	local menu_start = selected
+	local menu_end = menu_items
 
 
     if opts.fetch_formats then
@@ -105,8 +109,25 @@ function show_menu()
 
     function selected_move(amt)
         selected = selected + amt
-        if selected < 1 then selected = num_options
-        elseif selected > num_options then selected = 1 end
+        if selected < 1 then
+			selected = num_options;
+			menu_end = num_options
+			menu_start = num_options-menu_items+1
+        elseif selected > num_options then
+			selected = 1; menu_start = 1
+			menu_end = menu_items
+		else
+			if menu_end < num_options and selected >= menu_end then
+				menu_start = menu_start + 1
+				menu_end = menu_end + 1
+			elseif (selected > 1) and selected <= menu_start then
+				menu_start = menu_start - 1
+				menu_end = menu_end - 1
+			end
+			if menu_start < 1 then
+				menu_start = menu_start + 1
+			end
+		end
         timeout:kill()
         timeout:resume()
         draw_menu()
@@ -127,7 +148,9 @@ function show_menu()
         ass:append(opts.style_ass_tags)
 
         for i,v in ipairs(options) do
-            ass:append(choose_prefix(i)..v.label.."\\N")
+			if (i >= menu_start and i <= menu_end) then
+				ass:append(choose_prefix(i)..v.label.."\\N")
+			end
         end
 
 		local w, h = mp.get_osd_size()
